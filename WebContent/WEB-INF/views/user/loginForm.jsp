@@ -4,6 +4,7 @@
 
 <%
 	UserVo authUser = (UserVo)session.getAttribute("authUser");
+	String result = request.getParameter("result");
 %>
 
 <!DOCTYPE html>
@@ -78,7 +79,7 @@
 				</div>
 				 <!-- //content-head -->
 	
-				<div id="user">
+				<div id="user">				
 					<div id="loginForm">
 						<form action="/mysite/user" method="get">
 	
@@ -93,7 +94,10 @@
 								<label class="form-text" for="input-pass">비밀번호</label> 
 								<input type="text" id="input-pass" name="password" value="" placeholder="비밀번호를 입력하세요"	>
 							</div>
-	
+							<br>
+							<% if("fail".equals(result)) { %>						
+								<p>로그인에 실패했습니다. 다시 로그인 해주세요.</p>
+							<% } %>
 							
 							<!-- 버튼영역 -->
 							<div class="button-area">
@@ -101,7 +105,7 @@
 							</div>
 							
 							<input type="hidden" name="action" value="login">
-						</form>
+						</form>						
 					</div>
 					<!-- //loginForm -->
 				</div>
