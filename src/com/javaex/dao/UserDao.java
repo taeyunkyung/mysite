@@ -73,4 +73,39 @@ public class UserDao {
 		return count;
 	}
 
+	// 회원정보(1명)가져오기: 로그인
+	public UserVo getUser(String id, String pw) {
+		UserVo user = null;
+		this.getConnection();
+
+		try {
+			String query = "";
+			query += "select  no, ";
+			query += "        name ";
+			query += " from users ";
+			query += " where id = ? ";
+			query += " and password = ?";
+
+			pstmt = conn.prepareStatement(query);
+			pstmt.setString(1, id);
+			pstmt.setString(2, pw);
+
+			rs = pstmt.executeQuery();
+			while (rs.next() == true) {
+				int no = rs.getInt("no");
+				String name = rs.getString("name");
+
+				user = new UserVo();
+				user.setNo(no);
+				user.setName(name);
+			}
+
+		} catch (SQLException e) {
+			System.out.println("error: " + e);
+		}
+
+		this.close();
+		return user;
+	}
+
 }
