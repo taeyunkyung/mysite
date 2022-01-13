@@ -68,15 +68,51 @@ public class UserController extends HttpServlet {
 				HttpSession session = request.getSession();
 				session.setAttribute("authUser", authVo);
 
-				WebUtil.redirect(request, response, "/mysite/main");			
+				WebUtil.redirect(request, response, "/mysite/main");
 			}
-			
+
 		} else if ("logout".equals(action)) {
 			System.out.println("user>logout");
-			
+
 			HttpSession session = request.getSession();
 			session.removeAttribute("authUser");
 			session.invalidate();
+
+			WebUtil.redirect(request, response, "/mysite/main");
+
+		} else if ("modifyForm".equals(action)) {
+			System.out.println("user>modifyForm");			
+			
+			HttpSession session = request.getSession();
+			UserVo get = (UserVo)session.getAttribute("authUser");			
+			
+			int no = get.getNo();			
+			UserDao userDao = new UserDao();
+			UserVo authVo = userDao.getUser(no);
+			
+			session.setAttribute("authUser", authVo);
+			
+			WebUtil.forward(request, response, "/WEB-INF/views/user/modifyForm.jsp");
+
+		} else if ("modify".equals(action)) {
+			System.out.println("user>modify");
+			
+			String password = request.getParameter("password");
+			String name = request.getParameter("name");
+			String gender = request.getParameter("gender");
+			int no = Integer.parseInt(request.getParameter("no"));
+			
+			UserVo authVo = new UserVo();
+			authVo.setPassword(password);
+			authVo.setName(name);
+			authVo.setGender(gender);
+			authVo.setNo(no);
+			
+			UserDao userDao = new UserDao();
+			userDao.update(authVo);
+			
+			HttpSession session = request.getSession();
+			session.setAttribute("authUser", authVo);
 			
 			WebUtil.redirect(request, response, "/mysite/main");
 		}

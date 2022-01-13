@@ -72,7 +72,7 @@ public class UserDao {
 		this.close();
 		return count;
 	}
-
+	
 	// 회원정보(1명)가져오기: 로그인
 	public UserVo getUser(String id, String pw) {
 		UserVo user = null;
@@ -92,11 +92,11 @@ public class UserDao {
 
 			rs = pstmt.executeQuery();
 			while (rs.next() == true) {
-				int no = rs.getInt("no");
+				int uno = rs.getInt("no");
 				String name = rs.getString("name");
 
 				user = new UserVo();
-				user.setNo(no);
+				user.setNo(uno);
 				user.setName(name);
 			}
 
@@ -108,4 +108,68 @@ public class UserDao {
 		return user;
 	}
 
+	// 회원정보(1명)가져오기: 회원정보수정
+	public UserVo getUser(int no) {
+		UserVo user = null;
+		this.getConnection();
+
+		try {
+			String query = "";
+			query += "select  id, ";
+			query += "        password, ";
+			query += "        name, ";
+			query += "        gender ";
+			query += " from users ";
+			query += " where no = ? ";
+
+			pstmt = conn.prepareStatement(query);
+			pstmt.setInt(1, no);
+
+			rs = pstmt.executeQuery();
+			while (rs.next() == true) {
+				String uid = rs.getString("id");
+				String upw = rs.getString("password");
+				String name = rs.getString("name");
+				String gender = rs.getString("gender");
+
+				user = new UserVo(no, uid, upw, name, gender);
+			}
+
+		} catch (SQLException e) {
+			System.out.println("error: " + e);
+		}
+
+		this.close();
+		return user;
+	}
+
+	// 수정
+	public int update(UserVo vo) {
+		int count = 0;
+		this.getConnection();
+
+		try {
+			String query = "";
+			query += "update users ";
+			query += " set password = ?, ";
+			query += "     name = ?, ";
+			query += "     gender = ? ";
+			query += " where no = ?";
+
+			pstmt = conn.prepareStatement(query);
+			pstmt.setString(1, vo.getPassword());
+			pstmt.setString(2, vo.getName());
+			pstmt.setString(3, vo.getGender());
+			pstmt.setInt(4, vo.getNo());
+
+			count = pstmt.executeUpdate();
+			System.out.println(count + "건 수정되었습니다.(UserDao)");
+
+		} catch (SQLException e) {
+			System.out.println("error: " + e);
+		}
+
+		this.close();
+		return count;
+	}
 }
