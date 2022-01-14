@@ -55,7 +55,6 @@ public class UserController extends HttpServlet {
 
 			UserDao userDao = new UserDao();
 			UserVo authVo = userDao.getUser(id, pw);
-			// System.out.println(authVo);
 
 			if (authVo == null) {
 				System.out.println("로그인 실패");
@@ -81,39 +80,37 @@ public class UserController extends HttpServlet {
 			WebUtil.redirect(request, response, "/mysite/main");
 
 		} else if ("modifyForm".equals(action)) {
-			System.out.println("user>modifyForm");			
-			
+			System.out.println("user>modifyForm");
+
 			HttpSession session = request.getSession();
-			UserVo get = (UserVo)session.getAttribute("authUser");			
-			
-			int no = get.getNo();			
+			UserVo get = (UserVo) session.getAttribute("authUser");
+
+			int no = get.getNo();
 			UserDao userDao = new UserDao();
-			UserVo authVo = userDao.getUser(no);
-			
-			session.setAttribute("authUser", authVo);
-			
+			UserVo userVo = userDao.getUser(no);
+
+			session.setAttribute("userVo", userVo);
+
 			WebUtil.forward(request, response, "/WEB-INF/views/user/modifyForm.jsp");
 
 		} else if ("modify".equals(action)) {
 			System.out.println("user>modify");
-			
+
+			HttpSession session = request.getSession();
+			int no = ((UserVo) session.getAttribute("authUser")).getNo();
+
 			String password = request.getParameter("password");
 			String name = request.getParameter("name");
 			String gender = request.getParameter("gender");
-			int no = Integer.parseInt(request.getParameter("no"));
-			
-			UserVo authVo = new UserVo();
-			authVo.setPassword(password);
-			authVo.setName(name);
-			authVo.setGender(gender);
-			authVo.setNo(no);
-			
+
+			UserVo vo = new UserVo(no, "", password, name, gender);
+
 			UserDao userDao = new UserDao();
-			userDao.update(authVo);
-			
-			HttpSession session = request.getSession();
-			session.setAttribute("authUser", authVo);
-			
+			userDao.update(vo);
+
+			UserVo sessionVo = (UserVo) session.getAttribute("authUser");
+			sessionVo.setName(name);
+
 			WebUtil.redirect(request, response, "/mysite/main");
 		}
 
