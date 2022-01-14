@@ -24,25 +24,25 @@ public class GuestbookController extends HttpServlet {
 		String action = request.getParameter("action");
 
 		if ("add".equals(action)) {
-			System.out.println("action=add");
+			System.out.println("guest>add");
 
 			String name = request.getParameter("name");
 			String password = request.getParameter("password");
 			String content = request.getParameter("content");
 
-			GuestbookDao dao = new GuestbookDao();
-			GuestbookVo vo = new GuestbookVo(name, password, content);
-			dao.insert(vo);
+			GuestbookDao guestbookDao = new GuestbookDao();
+			GuestbookVo guestbookVo = new GuestbookVo(name, password, content);
+			guestbookDao.insert(guestbookVo);
 			
 			WebUtil.redirect(request, response, "/mysite/guest");
 
 		} else if ("deleteForm".equals(action)) {
-			System.out.println("action=deleteform");
+			System.out.println("guest>deleteform");
 
 			WebUtil.forward(request, response, "/WEB-INF/views/guestbook/deleteForm.jsp");
 
 		} else if ("delete".equals(action)) {
-			System.out.println("action=delete");
+			System.out.println("guest>delete");
 
 			int no = Integer.parseInt(request.getParameter("no"));
 			String password = request.getParameter("password");
@@ -59,9 +59,8 @@ public class GuestbookController extends HttpServlet {
 		} else {
 			GuestbookDao dao = new GuestbookDao();
 			List<GuestbookVo> guestList = dao.getList();
-			//System.out.println(guestList);
 			
-			request.setAttribute("gList", guestList);
+			request.setAttribute("guestList", guestList);
 			
 			WebUtil.forward(request, response, "/WEB-INF/views/guestbook/addList.jsp");
 		}
