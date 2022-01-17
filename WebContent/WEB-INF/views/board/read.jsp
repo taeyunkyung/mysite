@@ -74,12 +74,9 @@
 								</span>
 							</div>
 							
-							<c:choose>
-								<c:when test="${readVo.userNo == authUser.no}">
-									<a id="btn_modify" href="/mysite/board?action=modifyForm&no=${readVo.no}">수정</a>
-								</c:when>
-								<c:otherwise></c:otherwise>
-							</c:choose>							
+							<c:if test="${readVo.userNo == authUser.no}">
+								<a id="btn_modify" href="/mysite/board?action=modifyForm&no=${readVo.no}">수정</a>
+							</c:if>					
 							
 							<a id="btn_modify" href="/mysite/board">목록</a>
 							

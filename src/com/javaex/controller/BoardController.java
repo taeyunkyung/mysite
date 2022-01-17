@@ -8,10 +8,12 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import com.javaex.dao.BoardDao;
 import com.javaex.util.WebUtil;
 import com.javaex.vo.BoardVo;
+import com.javaex.vo.UserVo;
 
 @WebServlet("/board")
 public class BoardController extends HttpServlet {
@@ -30,7 +32,7 @@ public class BoardController extends HttpServlet {
 
 			BoardDao boardDao = new BoardDao();
 			BoardVo boardVo = boardDao.read(no);
-			
+
 			boardDao.hit(no);
 
 			request.setAttribute("readVo", boardVo);
@@ -50,7 +52,16 @@ public class BoardController extends HttpServlet {
 		} else if ("writeForm".equals(action)) {
 			System.out.println("board>writeForm");
 
-			WebUtil.forward(request, response, "/WEB-INF/views/board/writeForm.jsp");
+			HttpSession session = request.getSession();
+			UserVo authUser = (UserVo) session.getAttribute("authUser");
+
+			if (authUser != null) {
+				System.out.println("로그인상태");
+				WebUtil.forward(request, response, "/WEB-INF/views/board/writeForm.jsp");
+			} else {
+				System.out.println("로그아웃상태: 비정상적인 접근");
+				WebUtil.redirect(request, response, "/mysite/main");
+			}
 
 		} else if ("write".equals(action)) {
 			System.out.println("board>write");
@@ -71,12 +82,12 @@ public class BoardController extends HttpServlet {
 
 		} else if ("modifyForm".equals(action)) {
 			System.out.println("board>modifyForm");
-			
+
 			int no = Integer.parseInt(request.getParameter("no"));
 			BoardDao boardDao = new BoardDao();
 			BoardVo boardVo = boardDao.read(no);
 
-			request.setAttribute("readVo", boardVo);			
+			request.setAttribute("readVo", boardVo);
 
 			WebUtil.forward(request, response, "/WEB-INF/views/board/modifyForm.jsp");
 

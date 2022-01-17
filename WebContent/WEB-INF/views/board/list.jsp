@@ -70,16 +70,11 @@
 										<td>${boardVo.hit}</td>
 										<td>${boardVo.regDate}</td>
 
-										<c:choose>
-											<c:when test="${boardVo.userNo == authUser.no}">
-												<td><a
-													href="/mysite/board?action=delete&no=${boardVo.no}">[삭제]</a></td>
-											</c:when>
-											<c:otherwise>
-												<td>삭제불가</td>
-											</c:otherwise>
-										</c:choose>
-
+										<c:if test="${boardVo.userNo == authUser.no}">
+											<td>
+												<a href="/mysite/board?action=delete&no=${boardVo.no}">[삭제]</a>
+											</td>											
+										</c:if>										
 									</tr>
 								</c:forEach>
 							</tbody>
@@ -101,16 +96,12 @@
 								<li><a href="">▶</a></li>
 							</ul>
 
-
 							<div class="clear"></div>
 						</div>
 
-						<c:choose>
-							<c:when test="${empty authUser}"></c:when>							
-							<c:otherwise>
-								<a id="btn_write" href="/mysite/board?action=writeForm">글쓰기</a>
-							</c:otherwise>
-						</c:choose>
+						<c:if test="${!empty authUser}">
+							<a id="btn_write" href="/mysite/board?action=writeForm">글쓰기</a>
+						</c:if>
 
 					</div>
 					<!-- //list -->
